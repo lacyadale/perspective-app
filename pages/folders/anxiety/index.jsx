@@ -3,24 +3,24 @@ import Card from '../../../components/Card';
 export default function AnxietyFolder() {
   const cards = [
     {
-      title: 'Trigger: Social Situation',
-      description: 'You feel nervous before walking into a group event.',
+      title: 'Trigger: What if...?',
+      description: 'Your mind loops on worst-case scenarios.',
     },
     {
-      title: 'Reaction: Avoidance',
-      description: 'You cancel plans or ghost the group chat.',
+      title: 'Reaction: Avoid or Overprepare',
+      description: 'You freeze or exhaust yourself with contingency plans.',
     },
     {
       title: 'Original Purpose',
-      description: 'Protection from rejection or shame.',
+      description: 'Stay safe by anticipating risk.',
     },
     {
       title: 'Repurpose Plan',
-      description: 'Breathe + reframe: “Safety isn’t always silence.”',
+      description: 'Focus on small wins + reality testing.',
     },
     {
       title: 'Core Function',
-      description: 'You notice when a situation feels unsafe before others do.',
+      description: 'You’re wired to spot danger before others do.',
     }
   ];
 
