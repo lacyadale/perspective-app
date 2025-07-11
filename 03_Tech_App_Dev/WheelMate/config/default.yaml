@@ -1,0 +1,12 @@
+features:
+  api_export_csv: premium
+  backtester: premium
+  realtime_stream: enterprise
+  screener_advanced: premium
+  screener_basic: free
+  trade_write: premium
+screener:
+  iv_min: 0.25
+  rsi_range:
+  - 30
+  - 70
