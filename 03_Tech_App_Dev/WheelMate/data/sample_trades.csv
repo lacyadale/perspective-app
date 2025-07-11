@@ -1,3 +1,0 @@
-symbol,trade_date,strike,option_type,premium,iv_rank,rsi,macd
-AAPL,2025-07-07,180,put,1.25,0.32,45,1.2
-TSLA,2025-07-07,250,call,2.1,0.55,60,0.5
