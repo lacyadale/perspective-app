@@ -61,3 +61,38 @@ Thumbs.db
 # Temporary folders
 tmp/
 temp/
+
+# Additional protections
+*.node
+*.dll
+*.exe
+*.o
+*.so
+*.dylib
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+~*
