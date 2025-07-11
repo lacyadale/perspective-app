@@ -96,3 +96,7 @@ desktop.ini
 *.tmp
 *.temp
 ~*
+
+# Temporarily ignore development folders
+03_Tech_App_Dev/
+WheelMate/
