@@ -1,0 +1,239 @@
+// components/LexInterface.js
+import React, { useState } from 'react';
+
+const LexInterface = ({ isVisible, onClose }) => {
+  const [messages, setMessages] = useState([
+    { type: 'lex', content: 'Hello! I\'m LexLocal. Try commands like "analytics", "toggle app adhd", or "pricing".' }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // API base URL from environment
+  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
+  const sendMessage = async (message) => {
+    if (!message.trim()) return;
+
+    setLoading(true);
+    setMessages(prev => [...prev, { type: 'user', content: message }]);
+
+    try {
+      const response = await fetch(`${API_BASE}/api/lex/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await response.json();
+      
+      setMessages(prev => [...prev, { 
+        type: 'lex', 
+        content: data.reply,
+        data: data.data,
+        timestamp: data.timestamp
+      }]);
+    } catch (error) {
+      console.error('Lex Error:', error);
+      setMessages(prev => [...prev, { 
+        type: 'error', 
+        content: 'Failed to connect to LexLocal. Make sure your backend is running on port 3001.' 
+      }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage(input);
+    setInput('');
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="lex-overlay">
+      <div className="lex-modal">
+        <div className="lex-header">
+          <h3>🤖 LexLocal AI Assistant</h3>
+          <button onClick={onClose} className="lex-close">×</button>
+        </div>
+        
+        <div className="lex-messages">
+          {messages.map((msg, index) => (
+            <div key={index} className={`lex-message ${msg.type}`}>
+              <div className="message-sender">
+                {msg.type === 'user' ? '👤 You' : msg.type === 'error' ? '❌ Error' : '🤖 Lex'}
+              </div>
+              <div className="message-content" 
+                   dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br>') }} />
+            </div>
+          ))}
+          {loading && (
+            <div className="lex-message loading">
+              <div className="message-sender">🤖 Lex</div>
+              <div className="message-content">Thinking...</div>
+            </div>
+          )}
+        </div>
+        
+        <form onSubmit={handleSubmit} className="lex-input-form">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Try: analytics, toggle app adhd, pricing, status"
+            disabled={loading}
+            className="lex-input"
+          />
+          <button type="submit" disabled={loading} className="lex-send">
+            Send
+          </button>
+        </form>
+        
+        <div className="lex-help">
+          <small>Commands: analytics | toggle app [name] | pricing | status</small>
+        </div>
+      </div>
+      
+      <style jsx>{`
+        .lex-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
+        
+        .lex-modal {
+          background: white;
+          border-radius: 12px;
+          width: 600px;
+          max-width: 90vw;
+          max-height: 80vh;
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .lex-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px;
+          border-bottom: 1px solid #eee;
+        }
+        
+        .lex-header h3 {
+          margin: 0;
+          color: #333;
+        }
+        
+        .lex-close {
+          background: none;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: #666;
+          padding: 0;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+        }
+        
+        .lex-close:hover {
+          background: #f0f0f0;
+        }
+        
+        .lex-messages {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px;
+          max-height: 400px;
+        }
+        
+        .lex-message {
+          margin-bottom: 15px;
+        }
+        
+        .message-sender {
+          font-weight: bold;
+          font-size: 14px;
+          margin-bottom: 5px;
+          color: #666;
+        }
+        
+        .message-content {
+          background: #f8f9fa;
+          padding: 10px 15px;
+          border-radius: 8px;
+          line-height: 1.4;
+        }
+        
+        .lex-message.user .message-content {
+          background: #007bff;
+          color: white;
+          margin-left: 20px;
+        }
+        
+        .lex-message.error .message-content {
+          background: #dc3545;
+          color: white;
+        }
+        
+        .lex-input-form {
+          display: flex;
+          padding: 20px;
+          border-top: 1px solid #eee;
+          gap: 10px;
+        }
+        
+        .lex-input {
+          flex: 1;
+          padding: 10px 15px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 14px;
+        }
+        
+        .lex-input:focus {
+          outline: none;
+          border-color: #007bff;
+        }
+        
+        .lex-send {
+          padding: 10px 20px;
+          background: #007bff;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+        
+        .lex-send:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
+        
+        .lex-help {
+          padding: 0 20px 20px;
+          text-align: center;
+          color: #666;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default LexInterface;
