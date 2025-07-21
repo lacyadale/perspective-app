@@ -12,25 +12,22 @@ def run(command):
 def main():
     print("🔄 Lex Push: Starting auto-commit sequence...")
 
-    # Format, sort, and prepare repo
-    run("black .")
-    run("isort .")
+    run("black . || echo 'black not installed'")
+    run("isort . || echo 'isort not installed'")
 
-    # Stage all changes
     run("git add .")
-
-    # Commit with datetime tag
     timestamp = datetime.now().strftime("%Y-%m-%d %I:%M %p")
     commit_msg = f"🔄 Auto-update: {timestamp}"
-    run(f'git commit -m "{commit_msg}"')
+    run(f'git commit -m "{commit_msg}" || echo No changes to commit')
 
-    # Push to main
+    print("🚀 Pushing to origin...")
     run("git push origin main")
 
-    # Optional post-push hook
-    run("bash codex_tools/auto_update.sh || echo 'No codex_tools hook found.'")
+    print("🚀 Pushing to lexlocal...")
+    run("git push lexlocal main")
 
-    print("✅ Lex Push Complete.")
+    run("bash codex_tools/auto_update.sh || echo 'No codex_tools hook found'")
+    print("✅ Dual push complete.")
 
 if __name__ == "__main__":
     main()
